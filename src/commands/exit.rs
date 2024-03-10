@@ -1,5 +1,4 @@
-use std::ops::ControlFlow;
 
-pub fn execute() -> ControlFlow<(), String> {
-    ControlFlow::Break(())
+pub fn execute() -> String {
+    "break".to_string()
 }

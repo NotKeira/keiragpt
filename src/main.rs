@@ -1,5 +1,4 @@
 use std::io;
-use std::ops::ControlFlow;
 
 use command_handler::CommandHandler;
 use respond::reply;
@@ -24,18 +23,18 @@ fn main() {
             let input = input.trim();
             let command = input.split_whitespace().next().unwrap();
             let variables = input.split_whitespace().skip(1).collect::<Vec<&str>>().join(" ");
-            println!("{}", variables);
             let response = CommandHandler::handle(command, &variables);
-            if response: ControlFlow::Break(()) {
+            let responding_text;
+            if response=="break" {
                 println!("KeiraGPT: Goodbye!");
                 break;
             } else if response == "I don't understand that command." {
-                let response = reply(input);
+                responding_text = reply(strip::execute(&input)).parse().unwrap();
             } else {
-                let response = response.to_string();
+                responding_text = response.to_string();
             }
-            println!("KeiraGPT: {}", response);
-            logger::log(input, &response);
+            println!("KeiraGPT: {}", responding_text);
+            logger::log(input, &responding_text);
         }
     }
 }

@@ -1,15 +1,17 @@
-use std::any::Any;
-use crate::commands::{create, exit, help, read};
+
+use crate::commands::{exit, help, read};
 
 pub struct CommandHandler;
 
 impl CommandHandler {
     pub fn handle(command: &str, variables: &str) -> String {
+        if variables.is_empty() && command =="read" {
+            panic!("No variables provided.")
+        }
         match command {
-            "exit" => exit::execute().to_string(),
+            "exit" => exit::execute(),
             "help" => help::execute(),
-            "read" => read::execute(variables.file_name: &str),
-            // "new" => create::execute(),
+            "read" => read::execute(&variables),
             _ => "I don't understand that command.".to_string(),
         }
     }
