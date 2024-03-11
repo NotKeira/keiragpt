@@ -4,7 +4,6 @@ use command_handler::CommandHandler;
 use respond::reply;
 
 mod respond;
-mod logger;
 mod strip;
 mod command_handler;
 
@@ -25,7 +24,7 @@ fn main() {
             let variables = input.split_whitespace().skip(1).collect::<Vec<&str>>().join(" ");
             let response = CommandHandler::handle(command, &variables);
             let responding_text;
-            if response=="break" {
+            if response == "break" {
                 println!("KeiraGPT: Goodbye!");
                 break;
             } else if response == "I don't understand that command." {
@@ -34,7 +33,6 @@ fn main() {
                 responding_text = response.to_string();
             }
             println!("KeiraGPT: {}", responding_text);
-            logger::log(input, &responding_text);
         }
     }
 }
