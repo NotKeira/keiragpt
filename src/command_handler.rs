@@ -1,18 +1,22 @@
-
-use crate::commands::{exit, help, read};
-
+use crate::commands::{exit, help};
+use crate::helpers::strip::Parameters;
 pub struct CommandHandler;
 
+pub enum Error {
+    EmptyVariables,
+    EmptyCommand,
+}
+
 impl CommandHandler {
-    pub fn handle(command: &str, variables: &str) -> String {
-        if variables.is_empty() && command =="read" {
-            panic!("No variables provided.")
+    pub fn handle(command: String, variables: Parameters) -> Result<String, Error> {
+        if command.is_empty() {
+            return Err(Error::EmptyCommand);
         }
-        match command {
-            "exit" => exit::execute(),
-            "help" => help::execute(),
-            "read" => read::execute(&variables),
-            _ => "I don't understand that command.".to_string(),
+        
+        match command.as_str() {
+            "exit" => Ok(exit::execute()),
+            "help" => Ok(help::execute()),
+            _ => Err(Error::EmptyCommand),
         }
     }
 }

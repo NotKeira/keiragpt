@@ -1,39 +1,49 @@
 use std::io;
 
 use command_handler::CommandHandler;
-use respond::reply;
 
-mod respond;
-mod strip;
+use crate::command_handler::Error;
+use crate::helpers::strip;
+
 mod command_handler;
-
 mod commands;
+mod helpers;
+
+
+// random shit
+
+/* 
+            template flag module = {
+            flags = ["h"],
+            args = ["module", "command"],
+            }
+             */
 
 fn main() {
-    println!("KeiraGPT, your personal assistant designed to help you with simple tasks you don't want to do!\nBy NqtKeira - 2024 :)");
+    println!("Keewee, your personal assistant designed to help you with simple tasks you don't want to do!\nBy NqtKeira - 2024 :)");
     println!("Type 'exit' to stop.");
 
     loop {
         {
             println!("You: ");
-            let mut input = String::new();
-            io::stdin().read_line(&mut input).expect("Failed to read line");
-
-            let input = input.trim();
-            let command = input.split_whitespace().next().unwrap();
-            let variables = input.split_whitespace().skip(1).collect::<Vec<&str>>().join(" ");
-            let response = CommandHandler::handle(command, &variables);
-            let responding_text;
-            if response == "break" {
-                println!("KeiraGPT: Goodbye!");
-                break;
-            } else if response == "I don't understand that command." {
-                responding_text = reply(strip::execute(&input)).parse().unwrap();
-            } else {
-                responding_text = response.to_string();
+            let mut input: String = String::new();
+            io::stdin().read_line(&mut input).expect("Failed to read line").trim().to_string();
+            let vargs: Vec<&str> = input.split_whitespace().skip(1).collect();
+            let parameters = strip::split_flags(vargs);
+            
+            let command: String = input.split_whitespace().next().unwrap().to_string();
+            let result: Result<String, Error> = CommandHandler::handle(command, parameters);
+            let response: String;
+            match result {
+                Ok(value) if &value == "exit" => {
+                    println!("Keewee: Goodbye!");
+                    break;
+                }
+                Ok(value) => response = value,
+                Err(_) => response = "I don't understand that command.".to_string(),
             }
-            println!("KeiraGPT: {}", responding_text);
+
+            println!("Keewee: {}", response);
         }
     }
 }
-
