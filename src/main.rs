@@ -1,3 +1,5 @@
+// disable dead code warnings
+#![allow(dead_code)]
 use std::io;
 
 use command_handler::CommandHandler;
@@ -27,15 +29,16 @@ fn main() {
         {
             println!("You: ");
             let mut input: String = String::new();
-            io::stdin().read_line(&mut input).expect("Failed to read line").trim().to_string();
+            io::stdin().read_line(&mut input).expect("Failed to read line");
+            input.trim().to_string();
             let vargs: Vec<&str> = input.split_whitespace().skip(1).collect();
             let parameters = strip::split_flags(vargs);
-            
+
             let command: String = input.split_whitespace().next().unwrap().to_string();
             let result: Result<String, Error> = CommandHandler::handle(command, parameters);
             let response: String;
             match result {
-                Ok(value) if &value == "exit" => {
+                Ok(value) if &value == "break" => {
                     println!("Keewee: Goodbye!");
                     break;
                 }

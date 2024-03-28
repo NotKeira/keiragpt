@@ -1,6 +1,7 @@
+#[derive(Debug)]
 pub struct Parameters<'a> {
-    flags: Vec<&'a str>,
-    args: Vec<&'a str>,
+    pub(crate) flags: Vec<&'a str>,
+    pub(crate) args: Vec<&'a str>,
 }
 
 pub fn split_flags(args: Vec<&str>) -> Parameters<'_> {
